@@ -1,0 +1,104 @@
+body {
+  margin:0;
+  font-family: Segoe UI, Arial;
+  background:#f3f2f1;
+}
+
+.header {
+  background:#3b5ea9;
+  color:white;
+  padding:12px;
+}
+
+.search-box {
+  padding:10px;
+  background:white;
+}
+
+.search-box input {
+  width:100%;
+  padding:10px;
+  border:1px solid #ccc;
+  border-radius:6px;
+}
+
+.list {
+  padding:5px;
+}
+
+.item {
+  background:white;
+  padding:12px;
+  margin-bottom:5px;
+  display:flex;
+  justify-content:space-between;
+  border-radius:6px;
+}
+
+.item:hover {
+  background:#eef1f7;
+}
+
+.code {
+  font-weight:bold;
+}
+
+.tienda {
+  font-size:13px;
+}
+
+.estado {
+  margin-top:5px;
+}
+
+.badge {
+  padding:2px 6px;
+  border-radius:5px;
+  font-size:10px;
+  color:white;
+}
+
+.GUERRERO {background:#d9534f;}
+.PUEBLA {background:#5bc0de;}
+.MORELOS {background:#5cb85c;}
+.OAXACA {background:#f0ad4e;}
+.VERACRUZ {background:#6f42c1;}
+
+.modal {
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background:white;
+  padding:20px;
+  width:90%;
+  margin:30% auto;
+  border-radius:10px;
+}
+
+.btn {
+  margin-top:10px;
+  padding:10px;
+  width:100%;
+  background:#3b5ea9;
+  color:white;
+  border:none;
+  border-radius:5px;
+}
+
+.loading {
+  padding:20px;
+  text-align:center;
+}
+
+.arrow {
+  font-size:18px;
+  color:#999;
+}
+``
