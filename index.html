@@ -46,9 +46,28 @@
   </div>
 </div>
 
-<script>
 
+
+<!-- GERENCIAS VISUAL -->
+<div class="gerencias">
+  <button onclick="selectGerencia('PUEBLA')">🏪 PUEBLA</button>
+  <button onclick="selectGerencia('MORELIA')">📍 MORELIA</button>
+  <button onclick="selectGerencia('SURESTE')">🌴 SURESTE</button>
+  <button onclick="selectGerencia('PENINSULA')">🌊 PENÍNSULA</button>
+</div>
+
+<!-- BUSCADOR -->
+<div class="search-box">
+  <input type="text" id="search" placeholder="Buscar tienda o código...">
+</div>
+
+<!-- BOTON REGRESAR -->
+<button onclick="resetGerencia()">🔙 Cambiar gerencia</button>
+
+<script>
 let data = [];
+let timeout;
+let currentGerencia = "";
 
 // ✅ CARGAR JSON
 fetch('data.json')
@@ -59,6 +78,32 @@ fetch('data.json')
     render();
   });
 
+// ✅ SELECCIONAR GERENCIA
+function selectGerencia(g) {
+  currentGerencia = g;
+  document.querySelector(".gerencias").style.display = "none";
+  render();
+  const header = document.querySelector(".header");
+
+// limpiar clases anteriores
+header.classList.remove("PUEBLA","MORELIA","SURESTE","PENINSULA");
+
+// agregar nueva
+header.classList.add(g);
+
+  document.querySelectorAll(".gerencias button")
+  .forEach(btn => btn.classList.remove("active"));
+
+event.target.classList.add("active");
+}
+
+// ✅ RESET GERENCIA
+function resetGerencia() {
+  currentGerencia = "";
+  document.querySelector(".gerencias").style.display = "grid";
+  render();
+}
+
 // ✅ RENDER
 const list = document.getElementById("list");
 
@@ -67,36 +112,39 @@ function render(filter = "") {
   list.innerHTML = "";
 
   data
-    .filter(d =>
-      d.tienda.toLowerCase().includes(filter.toLowerCase()) ||
-      d.code.toLowerCase().includes(filter.toLowerCase())
-    )
-    .slice(0, 80) // 🔥 LIMITA RESULTADOS (MEJORA RENDIMIENTO)
+    .filter(d => {
+
+      const gerenciaLimpia = d.gerencia
+        .toUpperCase()
+        .replace("GERENCIA ", "");
+
+      return (
+        (currentGerencia === "" || gerenciaLimpia === currentGerencia) &&
+        (
+          d.tienda.toLowerCase().includes(filter.toLowerCase()) ||
+          d.code.toLowerCase().includes(filter.toLowerCase())
+        )
+      );
+    })
+    .slice(0, 80)
     .forEach(d => {
 
       list.innerHTML += `
         <div class="item" onclick="openModal('${d.tienda}','${d.user}','${d.pass}')">
-          
           <div>
             <div class="code">${d.code}</div>
             <div class="tienda">${d.tienda}</div>
-
             <div class="estado">
-              <span class="badge ${d.estado}">
-                ${d.estado}
-              </span>
+              <span class="badge ${d.estado}">${d.estado}</span>
             </div>
           </div>
-
           <div class="arrow">›</div>
         </div>
       `;
     });
 }
 
-// ✅ BUSCADOR CON DEBOUNCE (NO LAG)
-let timeout;
-
+// ✅ BUSCADOR (SIN LAG)
 document.getElementById("search").addEventListener("input", e => {
 
   clearTimeout(timeout);
@@ -104,7 +152,6 @@ document.getElementById("search").addEventListener("input", e => {
   timeout = setTimeout(() => {
     render(e.target.value);
   }, 250);
-
 });
 
 // ✅ MODAL
@@ -121,7 +168,6 @@ function closeModal() {
 
 // ✅ COPIAR
 function copyData() {
-
   const text =
     "Usuario: " + document.getElementById("modalUser").innerText +
     "\nContraseña: " + document.getElementById("modalPass").innerText;
@@ -130,7 +176,7 @@ function copyData() {
   alert("Copiado ✅");
 }
 
-// ✅ CERRAR MODAL AL TOCAR FONDO
+// ✅ CERRAR MODAL
 document.getElementById("modal").onclick = function(e) {
   if (e.target.id === "modal") {
     closeModal();
@@ -138,6 +184,5 @@ document.getElementById("modal").onclick = function(e) {
 };
 
 </script>
-
 </body>
 </html>
