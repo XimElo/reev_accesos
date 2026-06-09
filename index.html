@@ -91,7 +91,6 @@ function selectGerencia(g) {
   currentGerencia = g;
 
   document.getElementById("backBtn").style.display = "block";
-  document.getElementById("backBtn").style.display = "none";
   document.getElementById("search").value = "";
   document.querySelector(".header h2").innerText =
   "USUARIOS - " + g;
@@ -102,7 +101,6 @@ function selectGerencia(g) {
   document.getElementById("loading").style.display = "block";
 
   // mostrar UI
-  document.getElementById("searchBox").style.display = "block";
   document.getElementById("list").style.display = "block";
   document.querySelector(".gerencias").style.display = "none";
 
@@ -125,13 +123,18 @@ function selectGerencia(g) {
 }
 // ✅ RESET GERENCIA
 function resetGerencia() {
+
   currentGerencia = "";
   data = [];
   list.innerHTML = "";
 
+  // reset UI
   document.querySelector(".gerencias").style.display = "grid";
-  document.getElementById("searchBox").style.display = "none";
-  document.getElementById("list").style.display = "none";
+  document.getElementById("backBtn").style.display = "none";
+
+  document.querySelector(".header h2").innerText = "USUARIOS";
+
+  document.getElementById("search").value = "";
 }
 
 
