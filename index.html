@@ -78,13 +78,44 @@
 </div>
 
 
-
 <script>
+
 let data = [];
 let timeout;
 let currentGerencia = "";
 
+function loadAllData() {
 
+  const files = [
+    "data/puebla.json",
+    "data/morelia.json",
+    "data/sureste.json",
+    "data/peninsula.json"
+  ];
+
+  document.getElementById("loading").innerText = "Buscando en todas las gerencias...";
+  document.getElementById("loading").style.display = "block";
+
+  Promise.all(files.map(file => fetch(file).then(res => res.json())))
+    .then(results => {
+
+      data = results.flat();
+
+      document.getElementById("loading").style.display = "none";
+
+      render(document.getElementById("search").value);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const files = [
+    "data/puebla.json",
+    "data/morelia.json",
+    "data/sureste.json",
+    "data/peninsula.json"
+  ];
+});
+  
 // ✅ SELECCIONAR GERENCIA
 function selectGerencia(g) {
 
@@ -138,7 +169,16 @@ function resetGerencia() {
 }
 
 
+function highlight(text, search) {
+  if (!search) return text;
+
+  const regex = new RegExp(`(${search})`, "gi");
+
+  return text.replace(regex, `<span class="hl">$1</span>`);
+}
+  
 // ✅ RENDER
+
 const list = document.getElementById("list");
 
 function render(filter = "") {
@@ -166,8 +206,8 @@ function render(filter = "") {
       list.innerHTML += `
         <div class="item" onclick="openModal('${d.tienda}','${d.user}','${d.pass}')">
           <div>
-            <div class="code">${d.code}</div>
-            <div class="tienda">${d.tienda}</div>
+           <div class="code">${highlight(d.code, filter)}</div>
+           <div class="tienda">${highlight(d.tienda, filter)}</div>
             <div class="estado">
               <span class="badge ${d.estado}">${d.estado}</span>
             </div>
@@ -180,13 +220,9 @@ function render(filter = "") {
 
 // ✅ BUSCADOR (SIN LAG)
 document.getElementById("search").addEventListener("input", e => {
-
-  clearTimeout(timeout);
-
-  timeout = setTimeout(() => {
-    render(e.target.value);
-  }, 250);
+  render(e.target.value);
 });
+
 
 // ✅ MODAL
 function openModal(tienda, user, pass) {
@@ -199,6 +235,39 @@ function openModal(tienda, user, pass) {
 function closeModal() {
   document.getElementById("modal").style.display = "none";
 }
+
+// ✅ CERRAR MODAL
+document.getElementById("modal").onclick = function(e) {
+  if (e.target.id === "modal") {
+    closeModal();
+  }
+};
+
+// 🔥 BUSCADOR GLOBAL (AL FINAL)
+document.getElementById("search").addEventListener("input", e => {
+
+  const value = e.target.value;
+
+  clearTimeout(timeout);
+
+  timeout = setTimeout(() => {
+
+    // 🔥 si NO hay gerencia seleccionada
+    if (currentGerencia === "") {
+
+      // cargar todo solo una vez
+      if (data.length === 0) {
+        loadAllData();
+      } else {
+        render(value);
+      }
+
+    } else {
+      render(value);
+    }
+
+  }, 250);
+});
 
 // ✅ COPIAR
 function copyData() {
