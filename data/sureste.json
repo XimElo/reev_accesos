@@ -1,4 +1,4 @@
-{
+[
 {"code":"MX8NH2CM","tienda":"OXXO CAFETALES VER","plaza":"10VCZ Boca del Rio","gerencia":"GERENCIA SURESTE","user":"500i4@ganaconopen.com","pass":"OXXO500I4!"},
 {"code":"MXHIJ43D","tienda":"OXXO SANTA FE","plaza":"10VCZ Cordoba","gerencia":"GERENCIA SURESTE","user":"500lp@ganaconopen.com","pass":"OXXO500LP%"},
 {"code":"MX7SL1RF","tienda":"OXXO EUROPA VER","plaza":"10VCZ Xalapa","gerencia":"GERENCIA SURESTE","user":"500nm@ganaconopen.com","pass":"OXXO500NM&"},
@@ -1810,5 +1810,4 @@
 {"code":"MXZWC36N","tienda":"OXXO PUENTE MIX","plaza":"10VCZ Coatzacoalcos","gerencia":"GERENCIA SURESTE","user":"507pc@ganaconopen.com","pass":"OXXO507PC!"},
 {"code":"MXZXMZVO","tienda":"OXXO LAS COLONIAS VER","plaza":"10VCZ Boca del Rio","gerencia":"GERENCIA SURESTE","user":"508ia@ganaconopen.com","pass":"OXXO508IA%"},
 {"code":"MXZZDU9A","tienda":"OXXO CRUCERO JUCHITAN OAX","plaza":"10VHT Oaxaca","gerencia":"GERENCIA SURESTE","user":"506ue@ganaconopen.com","pass":"OXXO506UE&"}
-
-}
+]
