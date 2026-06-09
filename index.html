@@ -80,9 +80,16 @@ fetch('data.json')
 
 // ✅ SELECCIONAR GERENCIA
 function selectGerencia(g) {
+  document.getElementById("loading").innerText = "Cargando " + g + "...";
+  document.getElementById("loading").style.display = "block";
   currentGerencia = g;
   document.querySelector(".gerencias").style.display = "none";
+  
   render();
+  setTimeout(() => {
+  document.getElementById("loading").style.display = "none";
+}, 500);
+
   const header = document.querySelector(".header");
 
 // limpiar clases anteriores
