@@ -17,6 +17,10 @@
   <h2>USUARIOS</h2>
 </div>
 
+  <button id="backBtn" class="back-btn" onclick="resetGerencia()" style="display:none;">
+  🔙 Cambiar gerencia
+  </button>
+  
 <!-- SEARCH -->
 <div class="search-box">
   <input type="text" id="search" placeholder="Buscar tienda o código...">
@@ -74,13 +78,6 @@
 </div>
 
 
-<!-- BUSCADOR -->
-<div class="search-box" id="searchBox" style="display:none;">
-  <input type="text" id="search" placeholder="Buscar tienda o código...">
-</div>
-
-<!-- BOTON REGRESAR -->
-<button onclick="resetGerencia()">🔙 Cambiar gerencia</button>
 
 <script>
 let data = [];
@@ -93,6 +90,13 @@ function selectGerencia(g) {
 
   currentGerencia = g;
 
+  document.getElementById("backBtn").style.display = "block";
+  document.getElementById("backBtn").style.display = "none";
+  document.getElementById("search").value = "";
+  document.querySelector(".header h2").innerText =
+  "USUARIOS - " + g;
+
+  
   // mostrar loading
   document.getElementById("loading").innerText = "Cargando " + g + "...";
   document.getElementById("loading").style.display = "block";
