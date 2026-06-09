@@ -87,49 +87,47 @@ let data = [];
 let timeout;
 let currentGerencia = "";
 
-// ✅ CARGAR JSON
-
-  .then(res => res.json())
-  .then(json => {
-    data = json;
-    document.getElementById("loading").style.display = "none";
-    render();
-  });
 
 // ✅ SELECCIONAR GERENCIA
 function selectGerencia(g) {
-  document.getElementById("searchBox").style.display = "block";
-  document.getElementById("list").style.display = "block";
+
+  currentGerencia = g;
+
+  // mostrar loading
   document.getElementById("loading").innerText = "Cargando " + g + "...";
   document.getElementById("loading").style.display = "block";
-  currentGerencia = g;
+
+  // mostrar UI
+  document.getElementById("searchBox").style.display = "block";
+  document.getElementById("list").style.display = "block";
   document.querySelector(".gerencias").style.display = "none";
-  
-  render();
-  setTimeout(() => {
-  document.getElementById("loading").style.display = "none";
-}, 500);
 
+  // 🔥 FETCH REAL
+  fetch(`data/${g.toLowerCase()}.json`)
+    .then(res => res.json())
+    .then(json => {
+
+      data = json;
+
+      document.getElementById("loading").style.display = "none";
+
+      render();
+    });
+
+  // 🎨 header color
   const header = document.querySelector(".header");
-
-// limpiar clases anteriores
-header.classList.remove("PUEBLA","MORELIA","SURESTE","PENINSULA");
-
-// agregar nueva
-header.classList.add(g);
-
-  document.querySelectorAll(".gerencias button")
-  .forEach(btn => btn.classList.remove("active"));
-
-event.target.classList.add("active");
+  header.classList.remove("PUEBLA","MORELIA","SURESTE","PENINSULA");
+  header.classList.add(g);
 }
-
 // ✅ RESET GERENCIA
 function resetGerencia() {
   currentGerencia = "";
   data = [];
   list.innerHTML = "";
+
   document.querySelector(".gerencias").style.display = "grid";
+  document.getElementById("searchBox").style.display = "none";
+  document.getElementById("list").style.display = "none";
 }
 
 
