@@ -50,14 +50,32 @@
 
 <!-- GERENCIAS VISUAL -->
 <div class="gerencias">
-  <button onclick="selectGerencia('PUEBLA')">🏪 PUEBLA</button>
-  <button onclick="selectGerencia('MORELIA')">📍 MORELIA</button>
-  <button onclick="selectGerencia('SURESTE')">🌴 SURESTE</button>
-  <button onclick="selectGerencia('PENINSULA')">🌊 PENÍNSULA</button>
+
+  <button onclick="selectGerencia('PUEBLA')">
+    <span>🏪</span>
+    Puebla
+  </button>
+
+  <button onclick="selectGerencia('MORELIA')">
+    <span>📍</span>
+    Morelia
+  </button>
+
+  <button onclick="selectGerencia('SURESTE')">
+    <span>🌴</span>
+    Sureste
+  </button>
+
+  <button onclick="selectGerencia('PENINSULA')">
+    <span>🌊</span>
+    Península
+  </button>
+
 </div>
 
+
 <!-- BUSCADOR -->
-<div class="search-box">
+<div class="search-box" id="searchBox" style="display:none;">
   <input type="text" id="search" placeholder="Buscar tienda o código...">
 </div>
 
@@ -80,6 +98,8 @@ fetch('data.json')
 
 // ✅ SELECCIONAR GERENCIA
 function selectGerencia(g) {
+  document.getElementById("searchBox").style.display = "block";
+  document.getElementById("list").style.display = "block";
   document.getElementById("loading").innerText = "Cargando " + g + "...";
   document.getElementById("loading").style.display = "block";
   currentGerencia = g;
