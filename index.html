@@ -183,8 +183,7 @@ function render(filter = "") {
        const matchMecanica = (currentMecanica === "" || d.MECANICA === currentMecanica);
        return matchBusqueda && matchMecanica;
    });
-   filteredData.slice(0, 80).
-   .forEach(d => {
+   filteredData.slice(0, 80).forEach(d => {
 
     list.innerHTML += `
         <div class="item"
@@ -232,7 +231,7 @@ document.getElementById("search").addEventListener("input", e => {
    }, 250);
 });
 // ✅ MODAL
-function ofunction openModal(
+function openModal(
     tienda,
     user,
     pass,
