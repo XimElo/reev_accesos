@@ -58,6 +58,7 @@
 <div class="search-box">
 <input type="text" id="search" placeholder="Buscar tienda o código...">
 </div>
+
 <!-- FILTROS DE MECÁNICA -->
 <div id="mecanicaFiltersContainer" class="mecanica-filters" style="display:none;">
 <button onclick="filterMecanica('')" class="active" id="btnMecAll">Todas</button>
@@ -80,13 +81,7 @@
 </div>
 </div>
 
-<div class="tienda">
-  ${highlight(d.tienda, filter)}
-</div>
 
-<div style="color:red;font-weight:bold;">
-  MECANICA TEST
-</div>
    
 <!-- GERENCIAS VISUAL -->
 <div class="gerencias">
@@ -188,28 +183,41 @@ function render(filter = "") {
        const matchMecanica = (currentMecanica === "" || d.MECANICA === currentMecanica);
        return matchBusqueda && matchMecanica;
    });
-   filteredData.slice(0, 80).forEach(d => {
-       const baseCCs = d["BASE CCs"] || "0";
-       const baseZyn = d["BASE ZYN"] || "0";
-       const mecanicaVal = d.MECANICA || "General";
-       list.innerHTML += `
-<div class="item" onclick="openModal('${d.tienda}','${d.user}','${d.pass}','${baseCCs}','${baseZyn}','${mecanicaVal}')">
-<div>
-<div class="code">${highlight(d.code, filter)}</div>
-<div class="tienda">${highlight(d.tienda, filter)}</div>
-<div class="bases-info">
-<span class="badge-mecanica">${mecanicaVal}</span>
-                       CCs: <span class="badge-base">${baseCCs}</span>
-                       ZYN: <span class="badge-base">${baseZyn}</span>
-</div>
-<div class="estado" style="margin-top: 4px;">
-<span class="badge ${d.estado}">${d.estado}</span>
-</div>
-</div>
-<div class="arrow">›</div>
-</div>
-       `;
-   });
+   filteredData.slice(0, 80).
+   .forEach(d => {
+
+    list.innerHTML += `
+        <div class="item"
+            onclick="openModal(
+                '${d.tienda}',
+                '${d.user}',
+                '${d.pass}',
+                '${d.MECANICA}',
+                '${d["BASE CCs"]}',
+                '${d["BASE ZYN"]}'
+            )">
+
+            <div>
+
+                <div class="code">
+                    ${highlight(d.code, filter)}
+                </div>
+
+                <div class="tienda">
+                    ${highlight(d.tienda, filter)}
+                </div>
+
+                <div class="mecanica">
+                    🏷️ ${d.MECANICA || ""}
+                </div>
+
+            </div>
+
+            <div class="arrow">›</div>
+
+        </div>
+    `;
+});
 }
 // ✅ BUSCADOR
 document.getElementById("search").addEventListener("input", e => {
@@ -224,12 +232,28 @@ document.getElementById("search").addEventListener("input", e => {
    }, 250);
 });
 // ✅ MODAL
-function openModal(tienda, user, pass, baseCCs, baseZyn, mecanica) {
-   document.getElementById("modal").style.display = "block";
-   document.getElementById("modalTitle").innerText = tienda;
-   document.getElementById("modalUser").innerText = user;
-   document.getElementById("modalPass").innerText = pass;
-   document.getElementById("modalBases").innerHTML = `<b>Mecánica:</b> ${mecanica}<br><b>BASE CCs:</b> ${baseCCs} | <b>BASE ZYN:</b> ${baseZyn}`;
+function ofunction openModal(
+    tienda,
+    user,
+    pass,
+    mecanica,
+    baseCCs,
+    baseZyn
+) {
+
+    document.getElementById("modal").style.display = "block";
+
+    document.getElementById("modalTitle").innerText = tienda;
+    document.getElementById("modalUser").innerText = user;
+    document.getElementById("modalPass").innerText = pass;
+
+    document.getElementById("modalBases").innerHTML = `
+        <b>Mecánica:</b> ${mecanica}<br><br>
+
+        <b>Base CCs:</b> ${baseCCs}<br>
+
+        <b>Base ZYN:</b> ${baseZyn}
+    `;
 }
 function closeModal() {
    document.getElementById("modal").style.display = "none";
