@@ -4,10 +4,48 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Usuarios REEV</title>
-<!-- ✅ CSS externo (más pro) -->
 <link rel="stylesheet" href="css/styles.css">
 <style>
-
+.bases-info {
+   font-size: 0.85rem;
+   margin-top: 4px;
+   color: #555;
+}
+.badge-base {
+   background-color: #e2e8f0;
+   padding: 2px 6px;
+   border-radius: 4px;
+   font-weight: bold;
+   margin-right: 5px;
+}
+.badge-mecanica {
+   background-color: #dbeafe;
+   color: #1e40af;
+   padding: 2px 6px;
+   border-radius: 4px;
+   font-size: 0.75rem;
+   font-weight: bold;
+}
+.mecanica-filters {
+   display: flex;
+   gap: 8px;
+   overflow-x: auto;
+   padding: 10px 0;
+   margin-bottom: 10px;
+}
+.mecanica-filters button {
+   padding: 6px 12px;
+   border: 1px solid #cbd5e1;
+   border-radius: 20px;
+   background: #fff;
+   cursor: pointer;
+   white-space: nowrap;
+}
+.mecanica-filters button.active {
+   background: #2563eb;
+   color: #fff;
+   border-color: #2563eb;
+}
 </style>
 </head>
 <body>
@@ -20,11 +58,11 @@
 <div class="search-box">
 <input type="text" id="search" placeholder="Buscar tienda o código...">
 </div>
-<!-- FILTROS DE MECÁNICA (Se muestran al seleccionar gerencia) -->
+<!-- FILTROS DE MECÁNICA -->
 <div id="mecanicaFiltersContainer" class="mecanica-filters" style="display:none;">
 <button onclick="filterMecanica('')" class="active" id="btnMecAll">Todas</button>
 <button onclick="filterMecanica('Resellers')" id="btnMecResellers">Resellers</button>
-<!-- Agrega más botones si tienes otras mecánicas, ej: Mayoreo, Detalle, etc. -->
+<button onclick="filterMecanica('ZYN + CC\'s')" id="btnMecZynCC">ZYN + CC's</button>
 </div>
 <!-- LOADING -->
 <div id="loading" class="loading">Cargando datos...</div>
@@ -52,46 +90,48 @@
 let data = [];
 let timeout;
 let currentGerencia = "";
-let currentMecanica = ""; // Variable para filtrar por mecánica
+let currentMecanica = "";
+// Cargar global si buscan sin seleccionar gerencia
 function loadAllData() {
    const files = [ "data/puebla.json", "data/morelia.json", "data/sureste.json", "data/peninsula.json" ];
-   document.getElementById("loading").innerText = "Buscando in todas las gerencias...";
+   document.getElementById("loading").innerText = "Buscando en todas las gerencias...";
    document.getElementById("loading").style.display = "block";
    Promise.all(files.map(file => fetch(file).then(res => res.json())))
    .then(results => {
        data = results.flat();
        document.getElementById("loading").style.display = "none";
        render(document.getElementById("search").value);
+   })
+   .catch(err => {
+       console.error("Error al cargar archivos:", err);
+       document.getElementById("loading").innerText = "Error al cargar los datos.";
    });
 }
-document.addEventListener("DOMContentLoaded", () => {
-   const files = [ "data/puebla.json", "data/morelia.json", "data/sureste.json", "data/peninsula.json" ];
-});
 // ✅ SELECCIONAR GERENCIA
 function selectGerencia(g) {
    currentGerencia = g;
-   currentMecanica = ""; // Resetear filtro de mecánica al cambiar de gerencia
+   currentMecanica = "";
    document.getElementById("backBtn").style.display = "block";
    document.getElementById("search").value = "";
    document.querySelector(".header h2").innerText = "USUARIOS - " + g;
-   // Mostrar filtros de mecánica
    document.getElementById("mecanicaFiltersContainer").style.display = "flex";
    setActiveMecanicaBtn("");
-   // Mostrar loading
    document.getElementById("loading").innerText = "Cargando " + g + "...";
    document.getElementById("loading").style.display = "block";
-   // Mostrar UI
    document.getElementById("list").style.display = "block";
    document.querySelector(".gerencias").style.display = "none";
-   // 🔥 FETCH REAL
+   // Petición al JSON correspondiente a la gerencia
    fetch(`data/${g.toLowerCase()}.json`)
    .then(res => res.json())
    .then(json => {
        data = json;
        document.getElementById("loading").style.display = "none";
        render();
+   })
+   .catch(err => {
+       console.error("Error al cargar gerencia:", err);
+       document.getElementById("loading").innerText = `No se encontró el archivo data/${g.toLowerCase()}.json`;
    });
-   // 🎨 header color
    const header = document.querySelector(".header");
    header.classList.remove("PUEBLA","MORELIA","SURESTE","PENINSULA");
    header.classList.add(g);
@@ -102,7 +142,6 @@ function resetGerencia() {
    currentMecanica = "";
    data = [];
    list.innerHTML = "";
-   // reset UI
    document.querySelector(".gerencias").style.display = "grid";
    document.getElementById("backBtn").style.display = "none";
    document.getElementById("mecanicaFiltersContainer").style.display = "none";
@@ -121,6 +160,8 @@ function setActiveMecanicaBtn(mecanica) {
        document.getElementById("btnMecAll").classList.add("active");
    } else if (mecanica === "Resellers") {
        document.getElementById("btnMecResellers").classList.add("active");
+   } else if (mecanica === "ZYN + CC's") {
+       document.getElementById("btnMecZynCC").classList.add("active");
    }
 }
 function highlight(text, search) {
@@ -132,19 +173,15 @@ function highlight(text, search) {
 const list = document.getElementById("list");
 function render(filter = "") {
    list.innerHTML = "";
-   data.filter(d => {
-       const gerenciaLimpia = d.gerencia ? d.gerencia.toUpperCase().replace("GERENCIA ", "") : currentGerencia;
-       // Validaciones de filtros (Gerencia, Búsqueda de texto y Mecánica)
-       const matchGerencia = (currentGerencia === "" || gerenciaLimpia === currentGerencia);
-       const matchBusqueda = (d.tienda.toLowerCase().includes(filter.toLowerCase()) || d.code.toLowerCase().includes(filter.toLowerCase()));
+   const filteredData = data.filter(d => {
+       const matchBusqueda = (d.tienda && d.tienda.toLowerCase().includes(filter.toLowerCase())) ||
+                             (d.code && d.code.toLowerCase().includes(filter.toLowerCase()));
        const matchMecanica = (currentMecanica === "" || d.MECANICA === currentMecanica);
-       return matchGerencia && matchBusqueda && matchMecanica;
-   })
-   .slice(0, 80)
-   .forEach(d => {
-       // Asegurarnos de leer las propiedades de bases con seguridad (por si varían en minúsculas/mayúsculas)
-       const baseCCs = d["BASE CCs"] || d.baseCCs || "0";
-       const baseZyn = d["BASE ZYN"] || d.baseZyn || "0";
+       return matchBusqueda && matchMecanica;
+   });
+   filteredData.slice(0, 80).forEach(d => {
+       const baseCCs = d["BASE CCs"] || "0";
+       const baseZyn = d["BASE ZYN"] || "0";
        const mecanicaVal = d.MECANICA || "General";
        list.innerHTML += `
 <div class="item" onclick="openModal('${d.tienda}','${d.user}','${d.pass}','${baseCCs}','${baseZyn}','${mecanicaVal}')">
@@ -153,8 +190,8 @@ function render(filter = "") {
 <div class="tienda">${highlight(d.tienda, filter)}</div>
 <div class="bases-info">
 <span class="badge-mecanica">${mecanicaVal}</span>
-                       📦 CCs: <span class="badge-base">${baseCCs}</span>
-                       ⚡ ZYN: <span class="badge-base">${baseZyn}</span>
+                       CCs: <span class="badge-base">${baseCCs}</span>
+                       ZYN: <span class="badge-base">${baseZyn}</span>
 </div>
 <div class="estado" style="margin-top: 4px;">
 <span class="badge ${d.estado}">${d.estado}</span>
@@ -165,7 +202,7 @@ function render(filter = "") {
        `;
    });
 }
-// ✅ BUSCADOR (SIN LAG)
+// ✅ BUSCADOR
 document.getElementById("search").addEventListener("input", e => {
    const value = e.target.value;
    clearTimeout(timeout);
@@ -188,7 +225,6 @@ function openModal(tienda, user, pass, baseCCs, baseZyn, mecanica) {
 function closeModal() {
    document.getElementById("modal").style.display = "none";
 }
-// ✅ CERRAR MODAL
 document.getElementById("modal").onclick = function(e) {
    if (e.target.id === "modal") { closeModal(); }
 };
