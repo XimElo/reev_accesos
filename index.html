@@ -20,6 +20,17 @@
   <button id="backBtn" class="back-btn" onclick="resetGerencia()" style="display:none;">
   🔙 Cambiar gerencia
   </button>
+
+<div class="search-box">
+  <select id="mecanicaFilter">
+    <option value="">Todas las mecánicas</option>
+    <option value="Resellers">Resellers</option>
+    <option value="Sell Out">Sell Out</option>
+    <option value="Sell In">Sell In</option>
+  </select>
+
+  <input type="text" id="search" placeholder="Buscar tienda o código...">
+</div>
   
 <!-- SEARCH -->
 <div class="search-box">
@@ -44,6 +55,20 @@
     <p><b>Contraseña:</b><br>
       <span id="modalPass"></span>
     </p>
+    <p>
+  <b>Mecánica:</b><br>
+  <span id="modalMecanica"></span>
+</p>
+
+<p>
+  <b>Base CCs:</b><br>
+  <span id="modalCC"></span>
+</p>
+
+<p>
+  <b>Base ZYN:</b><br>
+  <span id="modalZyn"></span>
+</p>
 
     <button class="btn" onclick="copyData()">📋 Copiar</button>
     <button class="btn" onclick="closeModal()">Cerrar</button>
@@ -225,16 +250,20 @@ document.getElementById("search").addEventListener("input", e => {
 
 
 // ✅ MODAL
-function openModal(tienda, user, pass) {
+function openModal(tienda, user,pass,mecanica,cc, zyn) {
+
   document.getElementById("modal").style.display = "block";
+
   document.getElementById("modalTitle").innerText = tienda;
   document.getElementById("modalUser").innerText = user;
   document.getElementById("modalPass").innerText = pass;
+
+  document.getElementById("modalMecanica").innerText = mecanica;
+  document.getElementById("modalCC").innerText = cc;
+  document.getElementById("modalZyn").innerText = zyn;
 }
 
-function closeModal() {
-  document.getElementById("modal").style.display = "none";
-}
+
 
 // ✅ CERRAR MODAL
 document.getElementById("modal").onclick = function(e) {
@@ -269,6 +298,18 @@ document.getElementById("search").addEventListener("input", e => {
   }, 250);
 });
 
+
+  document
+  .getElementById("mecanicaFilter")
+  .addEventListener("change", () => {
+
+    render(
+      document.getElementById("search").value
+    );
+
+});
+
+  
 // ✅ COPIAR
 function copyData() {
   const text =
