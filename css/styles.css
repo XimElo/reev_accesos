@@ -142,3 +142,33 @@ body {
   background:#eee;
   font-size:13px;
 }
+
+.mecanica{
+  font-size:13px;
+  color:#666;
+  margin-top:4px;
+}
+
+.bases{
+  margin-top:6px;
+  display:flex;
+  gap:8px;
+}
+
+.base-cc{
+  background:#fff3cd;
+  color:#856404;
+  padding:3px 8px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.base-zyn{
+  background:#d4edda;
+  color:#155724;
+  padding:3px 8px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:700;
+}
