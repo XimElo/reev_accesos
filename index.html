@@ -61,9 +61,19 @@
 
 <!-- FILTROS DE MECÁNICA -->
 <div id="mecanicaFiltersContainer" class="mecanica-filters" style="display:none;">
-<button onclick="filterMecanica('')" class="active" id="btnMecAll">Todas</button>
-<button onclick="filterMecanica('Resellers')" id="btnMecResellers">Resellers</button>
-<button onclick="filterMecanica('ZYN + CCs')" id="btnMecZynCC">
+
+    <button data-mec="" class="active">
+        Todas
+    </button>
+
+    <button data-mec="Resellers">
+        Resellers
+    </button>
+
+    <button data-mec="ZYN + CCs">
+        ZYN + CCs
+    </button>
+
 </div>
 <!-- LOADING -->
 <div id="loading" class="loading">Cargando datos...</div>
@@ -82,12 +92,34 @@
 </div>
    
 <!-- GERENCIAS VISUAL -->
-<div class="gerencias">
-<button onclick="selectGerencia('PUEBLA')"> <span>🏪</span> Puebla </button>
-<button onclick="selectGerencia('MORELIA')"> <span>📍</span> Morelia </button>
-<button onclick="selectGerencia('SURESTE')"> <span>🌴</span> Sureste </button>
-<button onclick="selectGerencia('PENINSULA')"> <span>🌊</span> Península </button>
-</div>
+<button class="gerenciaBtn" data-gerencia="PUEBLA">
+    🏪 Puebla
+</button>
+
+<button class="gerenciaBtn" data-gerencia="MORELIA">
+    📍 Morelia
+</button>
+
+<button class="gerenciaBtn" data-gerencia="SURESTE">
+    🌴 Sureste
+</button>
+
+<button class="gerenciaBtn" data-gerencia="PENINSULA">
+    🌊 Península
+</button>
+
+   document.querySelectorAll(".gerenciaBtn")
+.forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+        selectGerencia(btn.dataset.gerencia);
+
+    });
+
+});
+
+   
 <script>
 let data = [];
 let timeout;
