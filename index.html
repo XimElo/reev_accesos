@@ -1,178 +1,177 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Usuarios REEV</title>
+
 <link rel="stylesheet" href="css/styles.css">
+
 <style>
-.bases-info {
-   font-size: 0.85rem;
-   margin-top: 4px;
-   color: #555;
+
+.mecanica-filters{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:10px;
 }
-.badge-base {
-   background-color: #e2e8f0;
-   padding: 2px 6px;
-   border-radius: 4px;
-   font-weight: bold;
-   margin-right: 5px;
+
+.mecanica-filters button{
+    padding:8px 12px;
+    border:none;
+    border-radius:20px;
+    background:#e5e7eb;
+    cursor:pointer;
 }
-.badge-mecanica {
-   background-color: #dbeafe;
-   color: #1e40af;
-   padding: 2px 6px;
-   border-radius: 4px;
-   font-size: 0.75rem;
-   font-weight: bold;
+
+.mecanica-filters button.active{
+    background:#2563eb;
+    color:white;
 }
-.mecanica-filters {
-   display: flex;
-   gap: 8px;
-   overflow-x: auto;
-   padding: 10px 0;
-   margin-bottom: 10px;
+
+.bases-info{
+    line-height:1.8;
 }
-.mecanica-filters button {
-   padding: 6px 12px;
-   border: 1px solid #cbd5e1;
-   border-radius: 20px;
-   background: #fff;
-   cursor: pointer;
-   white-space: nowrap;
-}
-.mecanica-filters button.active {
-   background: #2563eb;
-   color: #fff;
-   border-color: #2563eb;
-}
+
 </style>
+
 </head>
+
 <body>
-<!-- HEADER -->
+
 <div class="header">
-<h2>USUARIOS</h2>
-</div>
-<button id="backBtn" class="back-btn" onclick="resetGerencia()" style="display:none;"> 🔙 Cambiar gerencia </button>
-<!-- SEARCH -->
-<div class="search-box">
-<input type="text" id="search" placeholder="Buscar tienda o código...">
+    <h2 id="titulo">USUARIOS</h2>
 </div>
 
-<!-- FILTROS DE MECÁNICA -->
+<button
+id="backBtn"
+class="back-btn"
+style="display:none;"
+onclick="resetGerencia()">
+🔙 Cambiar gerencia
+</button>
+
+<div class="search-box">
+    <input
+    type="text"
+    id="search"
+    placeholder="Buscar tienda o código...">
+</div>
+
 <div
 id="mecanicaFiltersContainer"
 class="mecanica-filters"
 style="display:none;">
 </div>
-   
-<!-- LOADING -->
-<div id="loading" class="loading">Cargando datos...</div>
-<!-- LIST -->
+
+<div id="loading" class="loading" style="display:none;">
+    Cargando datos...
+</div>
+
 <div class="list" id="list"></div>
-<!-- MODAL -->
+
 <div class="modal" id="modal">
-<div class="modal-content">
-<h3 id="modalTitle"></h3>
-<p><b>Usuario:</b><br> <span id="modalUser"></span></p>
-<p><b>Contraseña:</b><br> <span id="modalPass"></span></p>
-<p id="modalBases" class="bases-info"></p>
-<button class="btn" onclick="copyData()">📋 Copiar</button>
-<button class="btn" onclick="closeModal()">Cerrar</button>
+
+    <div class="modal-content">
+
+        <h3 id="modalTitle"></h3>
+
+        <p>
+            <b>Usuario:</b><br>
+            <span id="modalUser"></span>
+        </p>
+
+        <p>
+            <b>Contraseña:</b><br>
+            <span id="modalPass"></span>
+        </p>
+
+        <p id="modalBases" class="bases-info"></p>
+
+        <button class="btn" onclick="copyData()">
+            📋 Copiar
+        </button>
+
+        <button class="btn" onclick="closeModal()">
+            Cerrar
+        </button>
+
+    </div>
+
 </div>
+
+<div class="gerencias" id="gerencias">
+
+    <button onclick="selectGerencia('puebla')">
+        <span>🏪</span>
+        Puebla
+    </button>
+
+    <button onclick="selectGerencia('morelia')">
+        <span>📍</span>
+        Morelia
+    </button>
+
+    <button onclick="selectGerencia('sureste')">
+        <span>🌴</span>
+        Sureste
+    </button>
+
+    <button onclick="selectGerencia('peninsula')">
+        <span>🌊</span>
+        Península
+    </button>
+
 </div>
-   
-<!-- GERENCIAS VISUAL -->
-<button class="gerenciaBtn" data-gerencia="PUEBLA">
-    🏪 Puebla
-</button>
 
-<button class="gerenciaBtn" data-gerencia="MORELIA">
-    📍 Morelia
-</button>
-
-<button class="gerenciaBtn" data-gerencia="SURESTE">
-    🌴 Sureste
-</button>
-
-<button class="gerenciaBtn" data-gerencia="PENINSULA">
-    🌊 Península
-</button>
-
-   document.querySelectorAll(".gerenciaBtn")
-.forEach(btn => {
-
-    btn.addEventListener("click", () => {
-
-        selectGerencia(btn.dataset.gerencia);
-
-    });
-
-});
-
-   
 <script>
 
 let data = [];
-let currentGerencia = "";
 let currentMecanica = "";
 
 const list = document.getElementById("list");
 
-document.querySelectorAll(".gerencia-btn")
-.forEach(btn => {
-
-    btn.addEventListener("click", () => {
-
-        selectGerencia(
-            btn.dataset.gerencia
-        );
-
-    });
-
-});
-
 async function selectGerencia(gerencia){
-
-    currentGerencia = gerencia;
-
-    document.querySelector(".gerencias").style.display = "none";
-
-    document.getElementById("backBtn").style.display = "block";
 
     document.getElementById("loading").style.display = "block";
 
+    document.getElementById("gerencias").style.display = "none";
+
+    document.getElementById("backBtn").style.display = "block";
+
+    document.getElementById("titulo").innerText =
+        "USUARIOS - " + gerencia.toUpperCase();
+
     try{
 
-        const response = await fetch(
-            `data/${gerencia}.json`
-        );
+        const response =
+        await fetch(`data/${gerencia}.json`);
 
         data = await response.json();
 
-        buildMecanicaFilters();
+        createFilters();
 
-        render();
+        render("");
 
     }
-
     catch(error){
 
+        console.error(error);
+
         alert(
-            "No pude cargar data/" +
+            "No se pudo cargar data/" +
             gerencia +
             ".json"
         );
 
-        console.error(error);
-
     }
 
     document.getElementById("loading").style.display = "none";
-
 }
 
-function buildMecanicaFilters(){
+function createFilters(){
 
     const container =
     document.getElementById(
@@ -182,53 +181,53 @@ function buildMecanicaFilters(){
     container.style.display = "flex";
 
     const mecanicas =
-    [...new Set(
-    data.map(d => d.MECANICA)
-    )];
+    [...new Set(data.map(x => x.MECANICA))];
 
     container.innerHTML = "";
 
-    const allBtn =
-    document.createElement("button");
+    const btnAll = document.createElement("button");
 
-    allBtn.textContent = "Todas";
+    btnAll.innerText = "Todas";
 
-    allBtn.classList.add("active");
+    btnAll.classList.add("active");
 
-    allBtn.onclick = () => {
+    btnAll.onclick = () => {
 
         currentMecanica = "";
 
-        buildMecanicaFilters();
+        createFilters();
 
-        render();
-
+        render(
+            document.getElementById("search").value
+        );
     };
 
-    container.appendChild(allBtn);
+    container.appendChild(btnAll);
 
-    mecanicas.forEach(m => {
+    mecanicas.forEach(mec => {
 
         const btn =
         document.createElement("button");
 
-        btn.textContent = m;
+        btn.innerText = mec;
 
-        btn.onclick = () => {
-
-            currentMecanica = m;
-
-            buildMecanicaFilters();
-
-            render();
-
-        };
-
-        if(currentMecanica===m){
+        if(currentMecanica === mec){
 
             btn.classList.add("active");
 
         }
+
+        btn.onclick = () => {
+
+            currentMecanica = mec;
+
+            createFilters();
+
+            render(
+                document.getElementById("search").value
+            );
+
+        };
 
         container.appendChild(btn);
 
@@ -236,66 +235,55 @@ function buildMecanicaFilters(){
 
 }
 
-function render(search=""){
+function render(search){
 
-    list.innerHTML="";
+    list.innerHTML = "";
 
-    const results = data.filter(d => {
+    const result = data.filter(d => {
 
-        const busqueda =
+        const coincideBusqueda =
 
-        String(d.tienda)
-        .toLowerCase()
-        .includes(search.toLowerCase())
+            String(d.tienda)
+            .toLowerCase()
+            .includes(search.toLowerCase())
 
-        ||
+            ||
 
-        String(d.code)
-        .toLowerCase()
-        .includes(search.toLowerCase());
+            String(d.code)
+            .toLowerCase()
+            .includes(search.toLowerCase());
 
-        const mecanica =
+        const coincideMecanica =
 
-        currentMecanica === ""
+            currentMecanica === ""
 
-        ||
+            ||
 
-        d.MECANICA === currentMecanica;
+            d.MECANICA === currentMecanica;
 
-        return busqueda && mecanica;
+        return coincideBusqueda &&
+               coincideMecanica;
 
     });
 
-    results.forEach(d => {
+    result.forEach(d => {
 
-        const item =
+        const div =
         document.createElement("div");
 
-        item.className = "item";
+        div.className = "item";
 
-        item.innerHTML = `
-
+        div.innerHTML = `
             <div>
-
-                <div class="code">
-                    ${d.code}
-                </div>
-
-                <div class="tienda">
-                    ${d.tienda}
-                </div>
-
-                <div class="mecanica">
-                    ${d.MECANICA}
-                </div>
-
+                <div class="code">${d.code}</div>
+                <div class="tienda">${d.tienda}</div>
+                <div class="mecanica">${d.MECANICA}</div>
             </div>
 
             <div class="arrow">›</div>
-
         `;
 
-        item.addEventListener("click",()=>{
+        div.onclick = () => {
 
             openModal(
                 d.tienda,
@@ -306,9 +294,9 @@ function render(search=""){
                 d["BASE ZYN"]
             );
 
-        });
+        };
 
-        list.appendChild(item);
+        list.appendChild(div);
 
     });
 
@@ -316,7 +304,7 @@ function render(search=""){
 
 document
 .getElementById("search")
-.addEventListener("input",(e)=>{
+.addEventListener("input", e => {
 
     render(e.target.value);
 
@@ -327,42 +315,37 @@ tienda,
 user,
 pass,
 mecanica,
-baseCC,
-baseZyn
+baseCCs,
+baseZYN
 ){
 
-    document.getElementById("modal").style.display="block";
+    document.getElementById("modal").style.display = "block";
 
-    document.getElementById("modalTitle").innerText=tienda;
+    document.getElementById("modalTitle").innerText = tienda;
 
-    document.getElementById("modalUser").innerText=user;
+    document.getElementById("modalUser").innerText = user;
 
-    document.getElementById("modalPass").innerText=pass;
+    document.getElementById("modalPass").innerText = pass;
 
-    document.getElementById("modalBases").innerHTML=
-
-    `
-    <b>Mecánica:</b> ${mecanica}<br><br>
-    <b>Base CCs:</b> ${baseCC}<br>
-    <b>Base ZYN:</b> ${baseZyn}
+    document.getElementById("modalBases").innerHTML = `
+        <b>Mecánica:</b> ${mecanica}<br><br>
+        <b>Base CCs:</b> ${baseCCs}<br>
+        <b>Base ZYN:</b> ${baseZYN}
     `;
 
 }
 
 function closeModal(){
 
-    document.getElementById("modal").style.display="none";
+    document.getElementById("modal").style.display = "none";
 
 }
 
 function copyData(){
 
     const texto =
-    `Usuario: ${
-    modalUser.innerText
-    }\nContraseña: ${
-    modalPass.innerText
-    }`;
+`Usuario: ${document.getElementById("modalUser").innerText}
+Contraseña: ${document.getElementById("modalPass").innerText}`;
 
     navigator.clipboard.writeText(texto);
 
@@ -372,21 +355,22 @@ function copyData(){
 
 function resetGerencia(){
 
-    currentGerencia="";
+    data = [];
 
-    currentMecanica="";
+    currentMecanica = "";
 
-    data=[];
+    list.innerHTML = "";
 
-    list.innerHTML="";
+    document.getElementById("gerencias").style.display =
+        "grid";
 
-    document.querySelector(".gerencias").style.display="grid";
+    document.getElementById("backBtn").style.display =
+        "none";
 
-    document.getElementById("backBtn").style.display="none";
+    document.getElementById(
+        "mecanicaFiltersContainer"
+    ).style
 
-    document.getElementById("mecanicaFiltersContainer").style.display="none";
-
-}
 
 </script>
 </body>
