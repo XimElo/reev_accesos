@@ -206,47 +206,59 @@ function highlight(text, search) {
 // ✅ RENDER
 const list = document.getElementById("list");
 function render(filter = "") {
-   list.innerHTML = "";
-   const filteredData = data.filter(d => {
-       const matchBusqueda = (d.tienda && d.tienda.toLowerCase().includes(filter.toLowerCase())) ||
-                             (d.code && d.code.toLowerCase().includes(filter.toLowerCase()));
-       const matchMecanica = (currentMecanica === "" || d.MECANICA === currentMecanica);
-       return matchBusqueda && matchMecanica;
-   });
-   filteredData.slice(0, 80).forEach(d => {
 
-    list.innerHTML += `
-        <div class="item"
-            onclick="openModal(
-                '${d.tienda}',
-                '${d.user}',
-                '${d.pass}',
-                '${d.MECANICA}',
-                '${d["BASE CCs"]}',
-                '${d["BASE ZYN"]}'
-            )">
+    list.innerHTML = "";
 
+    const filteredData = data.filter(d => {
+
+        const tienda = String(d.tienda || "").toLowerCase();
+        const code = String(d.code || "").toLowerCase();
+
+        const matchBusqueda =
+            tienda.includes(filter.toLowerCase()) ||
+            code.includes(filter.toLowerCase());
+
+        const matchMecanica =
+            currentMecanica === "" ||
+            d.MECANICA === currentMecanica;
+
+        return matchBusqueda && matchMecanica;
+
+    });
+
+    filteredData.slice(0, 80).forEach(d => {
+
+        const item = document.createElement("div");
+
+        item.className = "item";
+
+        item.innerHTML = `
             <div>
-
-                <div class="code">
-                    ${highlight(d.code, filter)}
-                </div>
-
-                <div class="tienda">
-                    ${highlight(d.tienda, filter)}
-                </div>
-
-                <div class="mecanica">
-                    🏷️ ${d.MECANICA || ""}
-                </div>
-
+                <div class="code">${d.code}</div>
+                <div class="tienda">${d.tienda}</div>
+                <div class="mecanica">🏷️ ${d.MECANICA}</div>
             </div>
 
             <div class="arrow">›</div>
+        `;
 
-        </div>
-    `;
-});
+        item.addEventListener("click", () => {
+
+            openModal(
+                d.tienda,
+                d.user,
+                d.pass,
+                d.MECANICA,
+                d["BASE CCs"],
+                d["BASE ZYN"]
+            );
+
+        });
+
+        list.appendChild(item);
+
+    });
+
 }
 // ✅ BUSCADOR
 document.getElementById("search").addEventListener("input", e => {
