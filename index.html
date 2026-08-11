@@ -355,21 +355,21 @@ Contraseña: ${document.getElementById("modalPass").innerText}`;
 
 function resetGerencia(){
 
-    data = [];
+    currentGerencia="";
 
-    currentMecanica = "";
+    currentMecanica="";
 
-    list.innerHTML = "";
+    data=[];
 
-    document.getElementById("gerencias").style.display =
-        "grid";
+    list.innerHTML="";
 
-    document.getElementById("backBtn").style.display =
-        "none";
+    document.querySelector(".gerencias").style.display="grid";
 
-    document.getElementById(
-        "mecanicaFiltersContainer"
-    ).style
+    document.getElementById("backBtn").style.display="none";
+
+    document.getElementById("mecanicaFiltersContainer").style.display="none";
+
+}
 
 
 </script>
